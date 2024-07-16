@@ -1,13 +1,14 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from filters.admins import AdminFilter
+from keyboards.default.default import generate_btn
 from loader import bot, dp
 from keyboards.inline.admin import admin_main, admin_second, cancel, create_channels_button, create_admins_button, \
-    yes_no
+    yes_no,generate_inline_keyboard
 from aiogram.types import CallbackQuery
 from utils.db_api.sqlite import db
 from data.states import PersonalData, Texts
-from data.config import CHANNELS, ADMINS, Text_caption, Button_text
+from data.config import CHANNELS, ADMINS, Text_caption, Button_text, texts
 
 
 @dp.message_handler(AdminFilter(), text="/admin")
@@ -233,3 +234,16 @@ async def delete_admin(call: types.CallbackQuery, state: FSMContext):
         await state.finish()
         await call.message.delete()
         await call.message.answer("*Xush kelibsiz admin*", parse_mode="markdown", reply_markup=admin_main)
+
+
+@dp.callback_query_handler(AdminFilter(),text='manage_menus')
+async def manage_menus(msg:types.CallbackQuery, state:FSMContext):
+    await msg.message.edit_text('*Qaysi menyuni boshqarmoqchisiz*',reply_markup=generate_inline_keyboard(texts['mainM_uz']))
+    await state.set_state('manage_menus')
+
+
+@dp.callback_query_handler(state='manage_menus')
+async def manage_menus(msg:types.CallbackQuery,state:FSMContext):
+    print(msg.data)
+    print(db.select_menu_all(menu=msg.data))
+    await msg.message.edit_text('Salom')

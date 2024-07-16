@@ -89,7 +89,7 @@ CREATE TABLE Users (
         sql = f"UPDATE Users SET {set_clause} WHERE cid = ?"
         parameters.append(id)
         params = tuple(parameters)
-        return self.execute(sql, parameters=params,commit=True)
+        return self.execute(sql, parameters=params, commit=True)
 
     def count_users(self):
         return self.execute("SELECT COUNT(*) FROM Users;", fetchone=True)
@@ -99,6 +99,10 @@ CREATE TABLE Users (
 
     def select_user_all(self):
         return self.execute('SELECT * FROM Users;', fetchall=True)
+
+    def select_menu_all(self, menu):
+        sql = f"""SELECT * FROM menus WHERE menu=?;"""
+        return self.execute(sql, parameters=(menu), fetchall=True)
 
     def select_user_all_body(self):
         return self.execute('SELECT cid, full_name, phone, is_blocked FROM Users;', fetchall=True)

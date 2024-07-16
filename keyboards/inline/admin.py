@@ -14,6 +14,9 @@ admin_main = InlineKeyboardMarkup(inline_keyboard=[
         InlineKeyboardButton(text="📡 Barcha kanallar", callback_data="channels")
     ],
     [
+        InlineKeyboardButton(text="✏️ Menyularni boshqarish", callback_data="manage_menus")
+    ],
+    [
         InlineKeyboardButton(text=" ⚙️ Boshqa sozlamalar", callback_data="settings")
 
     ],
@@ -46,6 +49,13 @@ yes_no = InlineKeyboardMarkup(inline_keyboard=[
         InlineKeyboardButton(text="❌",callback_data="no")
     ]
 ])
+
+
+def generate_inline_keyboard(btn_list):
+    inline_keyboard = InlineKeyboardMarkup()
+    for btn in btn_list:
+        inline_keyboard.add(InlineKeyboardButton(text=btn, callback_data=btn))
+    return inline_keyboard
 
 
 def create_channels_button(names):
