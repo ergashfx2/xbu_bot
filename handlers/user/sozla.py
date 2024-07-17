@@ -1,7 +1,8 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.handler import CancelHandler
-
+from utils.misc.translitrate import to_cyrillic
+from deep_translator import GoogleTranslator
 from filters.admins import AdminFilter
 from keyboards.default.default import generate_btn
 from loader import bot, dp
@@ -275,7 +276,10 @@ async def menu_callback(call: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(AdminFilter(), state=MenuCustom.buttons)
 async def menu_callback(call: types.CallbackQuery, state: FSMContext):
     if call.data == 'add-sub-menu':
-        raise CancelHandler()
+
+        await call.message.edit_text('*Tugma uchun lotin tilida matn yuboring*', parse_mode="markdown",
+                                     reply_markup=back_manage_menus)
+        await MenuCustom.button_uz.set()
     elif call.data != 'add-sub-menu':
         await state.update_data({'button': call.data})
         await call.message.edit_text(f"Chindan ham *{call.data}* tugmasini o'chirasizmi ?", parse_mode="markdown",
@@ -291,12 +295,6 @@ async def delete_menu(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text("*Tugma o'chirildi*", parse_mode="markdown",reply_markup=generate_inline_keyboard_menus(btn_list=menus_list))
     await MenuCustom.menu.set()
 
-
-@dp.callback_query_handler(AdminFilter(), state=MenuCustom.buttons, text='add-sub-menu')
-async def menu_callback(call: types.CallbackQuery, state: FSMContext):
-    await call.message.edit_text('*Tugma uchun lotin tilida matn yuboring*', parse_mode="markdown",
-                                 reply_markup=back_manage_menus)
-    await MenuCustom.button_uz.set()
 
 
 @dp.message_handler(AdminFilter(), state=MenuCustom.button_uz)
@@ -357,6 +355,25 @@ async def menu_callback(msg: types.Message, state: FSMContext):
                 data['content_ru'],
                 data['content_kr']
             )
+            db.add_menu_buttons(
+                GoogleTranslator(source='auto', target='ru').translate(data['menu']),
+                data['button_uz'],
+                data['button_ru'],
+                data['button_kr'],
+                data['content_uz'],
+                data['content_ru'],
+                data['content_kr']
+            )
+            db.add_menu_buttons(
+                to_cyrillic(data['menu']),
+                data['button_uz'],
+                data['button_ru'],
+                data['button_kr'],
+                data['content_uz'],
+                data['content_ru'],
+                data['content_kr']
+            )
+
             buttons_list = db.select_menu_buttons(menu=data['menu'])
             buttons_list = [item[0] for item in buttons_list]
             await msg.answer("*Tugma muvaffaqiyatli qo'shildi*", parse_mode="markdown",

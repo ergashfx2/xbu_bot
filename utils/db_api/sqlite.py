@@ -165,6 +165,19 @@ CREATE TABLE Users (
         sql = "SELECT menu_button_uz FROM menus WHERE menu=?"
         return self.execute(sql, (menu,), fetchall=True)
 
+    def select_menu_content(self, button_text, lan):
+        if lan == 'uz':
+            column = 'menu_button_uz'
+            column2 = 'content_uz'
+        elif lan == 'ru':
+            column = 'menu_button_ru'
+            column2 = 'content_ru'
+        else:
+            column = 'menu_button_kr'
+            column2 = 'content_kr'
+        sql = f"SELECT {column2} FROM menus WHERE {column}=?"
+        return self.execute(sql, (button_text,), fetchall=True)
+
     def add_menu_buttons(self, menu, menu_button_uz, menu_button_ru, menu_button_kr, content_uz, content_ru,
                          content_kr):
         sql = """INSERT INTO menus(menu, menu_button_uz, menu_button_ru, menu_button_kr, content_uz, content_ru, content_kr) VALUES(?, ?, ?, ?, ?, ?, ?)"""

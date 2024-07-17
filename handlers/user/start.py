@@ -14,7 +14,14 @@ from keyboards.default.default import *
 from states.states import UserRegister
 from utils.misc.speak import speak
 from utils.misc.twilio import send_sms
+from states.states import MenuCustom
 
+@dp.message_handler(state=[MenuCustom.menu,MenuCustom.buttons,MenuCustom.button_ru,MenuCustom.button_uz,MenuCustom.button_kr,MenuCustom.content_uz,MenuCustom.content_ru,MenuCustom.content_kr], commands=['start'])
+async def start(message:types.Message, state:FSMContext):
+    await state.finish()
+    await message.answer(speak('*Xush kelibsiz ! Kerakli menyuni tanlang*', cid=message.from_user.id),
+                         reply_markup=generate_btn(
+                             btn_list=texts[f"initial_{db.select_user(cid=message.from_user.id)[3]}"]))
 
 @dp.message_handler(commands="start")
 async def send(message: Message):
@@ -50,9 +57,10 @@ async def phone(message: types.Message, state: FSMContext):
     phone = message.contact['phone_number']
     code = random.randint(1000, 9999)
     text = speak(f"Sizning tasdiqlash kodingiz {code}", cid=message.from_user.id)
-    send_sms(phone_number=phone, message=text)
+    send_sms(phone=phone, message=text)
     await state.update_data({'code': code})
     await state.update_data({'phone': phone})
+    await message.answer(str(code), parse_mode="Markdown")
     await message.answer(
         speak(speak(text='*Telefon raqamingizga yuborilgan 4 xonali kodni yozing*', cid=message.from_user.id),
               cid=message.from_user.id), parse_mode='Markdown')
@@ -73,5 +81,21 @@ async def code(message: types.Message, state: FSMContext):
         await state.finish()
 
 @dp.message_handler(text=['👤 Для физических лиц','👤 Jismoniy shaxslar uchun','👤 Жисмоний шахслар учун'])
-async def menu(message: types.Message):
+async def menu(message: types.Message, state: FSMContext):
     await message.answer(speak("*Jismoniy shaxslar bo'limiga xush kelibsiz ! Kerakli menyuni tanlang*", cid=message.from_user.id), parse_mode='Markdown',reply_markup=generate_btn(btn_list=texts[f"mainM_{db.select_user(cid=message.from_user.id)[3]}"]))
+    await state.set_state('jismoniy_shaxslar')
+
+@dp.message_handler(state='jismoniy_shaxslar')
+async def jismoniy_shaxslar(message: types.Message, state: FSMContext):
+    btn_list = db.select_menu_buttons(menu=message.text)
+    menus_list = [item[0] for item in btn_list]
+    await message.answer(speak('Kerakli menyuni tanlang', cid=message.from_user.id), parse_mode='Markdown',reply_markup=generate_btn(menus_list))
+    await state.set_state('jismoniy_buttons')
+
+@dp.message_handler(state='jismoniy_buttons')
+async def jismoniy_buttons(message: types.Message, state: FSMContext):
+    lan = db.select_user(cid=message.from_user.id)[3]
+    print(lan)
+    btn_list = db.select_menu_content(button_text=message.text,lan=lan)
+    await bot.copy_message(chat_id=message.chat.id, message_id=btn_list[0][0], from_chat_id='-1002243641076')
+
