@@ -161,6 +161,20 @@ CREATE TABLE Users (
     def delete_channel(self, channel):
         return self.execute(f'DELETE FROM Channels WHERE channel_id=?', parameters=(channel,), commit=True)
 
+    def select_menu_buttons(self, menu):
+        sql = "SELECT menu_button_uz FROM menus WHERE menu=?"
+        return self.execute(sql, (menu,), fetchall=True)
+
+    def add_menu_buttons(self, menu, menu_button_uz, menu_button_ru, menu_button_kr, content_uz, content_ru,
+                         content_kr):
+        sql = """INSERT INTO menus(menu, menu_button_uz, menu_button_ru, menu_button_kr, content_uz, content_ru, content_kr) VALUES(?, ?, ?, ?, ?, ?, ?)"""
+        self.execute(sql, parameters=(
+            menu, menu_button_uz, menu_button_ru, menu_button_kr, content_uz, content_ru, content_kr), commit=True)
+
+    def delete_menu_buttons(self, menu):
+        sql = "DELETE FROM menus WHERE menu=?"
+        return self.execute(sql, (menu,), commit=True)
+
 
 db = Database()
 

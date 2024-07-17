@@ -1,13 +1,16 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.handler import CancelHandler
+
 from filters.admins import AdminFilter
 from keyboards.default.default import generate_btn
 from loader import bot, dp
 from keyboards.inline.admin import admin_main, admin_second, cancel, create_channels_button, create_admins_button, \
-    yes_no,generate_inline_keyboard
-from aiogram.types import CallbackQuery
+    yes_no, generate_inline_keyboard, generate_inline_keyboard_menus, back_manage_menus
+from aiogram.types import CallbackQuery, ContentTypes
 from utils.db_api.sqlite import db
 from data.states import PersonalData, Texts
+from states.states import MenuCustom
 from data.config import CHANNELS, ADMINS, Text_caption, Button_text, texts
 
 
@@ -139,6 +142,15 @@ async def add_channel(call: CallbackQuery, state: FSMContext):
     await call.message.answer("❌ Amal bekor qilindi", reply_markup=admin_main)
 
 
+@dp.callback_query_handler(AdminFilter(), text="main",
+                           state=[MenuCustom.menu, MenuCustom.button_uz, MenuCustom.button_ru, MenuCustom.button_kr,
+                                  MenuCustom.content_uz, MenuCustom.content_ru, MenuCustom.content_kr])
+async def add_channel(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+    await call.message.answer("❌ Amal bekor qilindi", reply_markup=admin_main)
+    await state.finish()
+
+
 @dp.callback_query_handler(AdminFilter(), text="hide")
 async def add_channel(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
@@ -236,14 +248,123 @@ async def delete_admin(call: types.CallbackQuery, state: FSMContext):
         await call.message.answer("*Xush kelibsiz admin*", parse_mode="markdown", reply_markup=admin_main)
 
 
-@dp.callback_query_handler(AdminFilter(),text='manage_menus')
-async def manage_menus(msg:types.CallbackQuery, state:FSMContext):
-    await msg.message.edit_text('*Qaysi menyuni boshqarmoqchisiz*',reply_markup=generate_inline_keyboard(texts['mainM_uz']))
-    await state.set_state('manage_menus')
+@dp.callback_query_handler(AdminFilter(), text='manage_menus')
+async def manage_menus(msg: types.CallbackQuery, state: FSMContext):
+    await msg.message.edit_text('*Kerakli menyuni tanlang*', reply_markup=generate_inline_keyboard(texts['mainM_uz']))
+    await MenuCustom.menu.set()
 
 
-@dp.callback_query_handler(state='manage_menus')
-async def manage_menus(msg:types.CallbackQuery,state:FSMContext):
-    print(msg.data)
-    print(db.select_menu_all(menu=msg.data))
-    await msg.message.edit_text('Salom')
+@dp.callback_query_handler(AdminFilter(), text='manage_menus',
+                           state=[MenuCustom.menu, MenuCustom.button_uz, MenuCustom.button_ru, MenuCustom.button_kr,
+                                  MenuCustom.content_uz, MenuCustom.content_ru, MenuCustom.content_kr])
+async def manage_menus(msg: types.CallbackQuery, state: FSMContext):
+    await msg.message.edit_text('*Kerakli menyuni tanlang*', reply_markup=generate_inline_keyboard(texts['mainM_uz']))
+    await MenuCustom.menu.set()
+
+
+@dp.callback_query_handler(AdminFilter(), state=MenuCustom.menu)
+async def menu_callback(call: types.CallbackQuery, state: FSMContext):
+    await state.update_data({'menu': call.data})
+    menus_list = db.select_menu_buttons(menu=call.data)
+    menus_list = [item[0] for item in menus_list]
+    await call.message.edit_text('*Ushbu menyudagi tugmalar*', parse_mode="markdown",
+                                 reply_markup=generate_inline_keyboard_menus(btn_list=menus_list))
+    await MenuCustom.buttons.set()
+
+
+@dp.callback_query_handler(AdminFilter(), state=MenuCustom.buttons)
+async def menu_callback(call: types.CallbackQuery, state: FSMContext):
+    if call.data == 'add-sub-menu':
+        raise CancelHandler()
+    elif call.data != 'add-sub-menu':
+        await state.update_data({'button': call.data})
+        await call.message.edit_text(f"Chindan ham *{call.data}* tugmasini o'chirasizmi ?", parse_mode="markdown",
+                                     reply_markup=yes_no)
+        await state.set_state('delete-btn-menu')
+
+@dp.callback_query_handler(state='delete-btn-menu',text='yes')
+async def delete_menu(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    menus_list = db.select_menu_buttons(menu=data['menu'])
+    menus_list = [item[0] for item in menus_list]
+    db.delete_menu_buttons(menu=data['menu'])
+    await call.message.edit_text("*Tugma o'chirildi*", parse_mode="markdown",reply_markup=generate_inline_keyboard_menus(btn_list=menus_list))
+    await MenuCustom.menu.set()
+
+
+@dp.callback_query_handler(AdminFilter(), state=MenuCustom.buttons, text='add-sub-menu')
+async def menu_callback(call: types.CallbackQuery, state: FSMContext):
+    await call.message.edit_text('*Tugma uchun lotin tilida matn yuboring*', parse_mode="markdown",
+                                 reply_markup=back_manage_menus)
+    await MenuCustom.button_uz.set()
+
+
+@dp.message_handler(AdminFilter(), state=MenuCustom.button_uz)
+async def menu_callback(call: types.Message, state: FSMContext):
+    await state.update_data({'button_uz': call.text})
+    await call.answer('*Tugma uchun rus tilida matn yuboring*', parse_mode="markdown", reply_markup=back_manage_menus)
+    await MenuCustom.button_ru.set()
+
+
+@dp.message_handler(AdminFilter(), state=MenuCustom.button_ru)
+async def menu_callback(call: types.Message, state: FSMContext):
+    await state.update_data({'button_ru': call.text})
+    await call.answer('*Tugma uchun kril alifbosida matn yuboring*', parse_mode="markdown",
+                      reply_markup=back_manage_menus)
+    await MenuCustom.button_kr.set()
+
+
+@dp.message_handler(AdminFilter(), state=MenuCustom.button_kr)
+async def menu_callback(call: types.Message, state: FSMContext):
+    await state.update_data({'button_kr': call.text})
+    await call.answer('*Ushbu tugmaning lotin alifbosiga beradigan javobini kiriting*', parse_mode="markdown",
+                      reply_markup=back_manage_menus)
+    await MenuCustom.content_uz.set()
+
+
+@dp.message_handler(AdminFilter(), state=MenuCustom.content_uz, content_types=ContentTypes.ANY)
+async def menu_callback(msg: types.Message, state: FSMContext):
+    res = await bot.copy_message(chat_id='-1002243641076', from_chat_id=msg.chat.id, message_id=msg.message_id)
+    await state.update_data({'content_uz': res.message_id})
+    await msg.answer('*Ushbu tugmaning rus tiliga beradigan javobini kiriting*', parse_mode="markdown",
+                     reply_markup=back_manage_menus)
+    await MenuCustom.content_ru.set()
+
+
+@dp.message_handler(AdminFilter(), state=MenuCustom.content_ru, content_types=ContentTypes.ANY)
+async def menu_callback(msg: types.Message, state: FSMContext):
+    res = await bot.copy_message(chat_id='-1002243641076', from_chat_id=msg.chat.id, message_id=msg.message_id)
+    await state.update_data({'content_ru': res.message_id})
+    await msg.answer('*Ushbu tugmaning kril alifbosiga beradigan javobini kiriting*', parse_mode="markdown",
+                     reply_markup=back_manage_menus)
+    await MenuCustom.content_kr.set()
+
+
+@dp.message_handler(AdminFilter(), state=MenuCustom.content_kr, content_types=ContentTypes.ANY)
+async def menu_callback(msg: types.Message, state: FSMContext):
+    try:
+        res = await bot.copy_message(chat_id='-1002243641076', from_chat_id=msg.chat.id, message_id=msg.message_id)
+        await state.update_data({'content_kr': res.message_id})
+        data = await state.get_data()
+        required_keys = ['menu', 'button_uz', 'button_ru', 'button_kr', 'content_uz', 'content_ru', 'content_kr']
+        if all(key in data for key in required_keys):
+            db.add_menu_buttons(
+                data['menu'],
+                data['button_uz'],
+                data['button_ru'],
+                data['button_kr'],
+                data['content_uz'],
+                data['content_ru'],
+                data['content_kr']
+            )
+            buttons_list = db.select_menu_buttons(menu=data['menu'])
+            buttons_list = [item[0] for item in buttons_list]
+            await msg.answer("*Tugma muvaffaqiyatli qo'shildi*", parse_mode="markdown",
+                             reply_markup=generate_inline_keyboard_menus(buttons_list))
+            await MenuCustom.menu.set()
+        else:
+            await msg.answer("❌ Barcha kerakli ma'lumotlar to'liq emas.", parse_mode="markdown")
+    except Exception as e:
+        print(f"Error: {e}")
+        await msg.answer("❌ Xato yuz berdi. Iltimos, qayta urinib ko'ring.", parse_mode="markdown",
+                         reply_markup=back_manage_menus)

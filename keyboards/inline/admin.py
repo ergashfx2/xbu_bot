@@ -46,7 +46,7 @@ cancel = InlineKeyboardMarkup(inline_keyboard=[
 yes_no = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(text="✅", callback_data="yes"),
-        InlineKeyboardButton(text="❌",callback_data="no")
+        InlineKeyboardButton(text="❌", callback_data="no")
     ]
 ])
 
@@ -54,7 +54,25 @@ yes_no = InlineKeyboardMarkup(inline_keyboard=[
 def generate_inline_keyboard(btn_list):
     inline_keyboard = InlineKeyboardMarkup()
     for btn in btn_list:
+        if btn.startswith("🔙 Ortga qaytish"):
+            inline_keyboard.add(InlineKeyboardButton(text=btn, callback_data="main"))
+        else:
+            inline_keyboard.add(InlineKeyboardButton(text=btn, callback_data=btn))
+
+    return inline_keyboard
+
+
+back_manage_menus = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="⛔️ Bekor qilish", callback_data="manage_menus")]
+])
+
+
+def generate_inline_keyboard_menus(btn_list):
+    inline_keyboard = InlineKeyboardMarkup()
+    inline_keyboard.add(InlineKeyboardButton(text="➕ Qo'shish", callback_data="add-sub-menu"))
+    for btn in btn_list:
         inline_keyboard.add(InlineKeyboardButton(text=btn, callback_data=btn))
+    inline_keyboard.add(InlineKeyboardButton(text="🔙 Ortga qaytish", callback_data="manage_menus"))
     return inline_keyboard
 
 
