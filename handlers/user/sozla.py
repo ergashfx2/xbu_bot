@@ -266,7 +266,7 @@ async def manage_menus(msg: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(AdminFilter(), state=MenuCustom.menu)
 async def menu_callback(call: types.CallbackQuery, state: FSMContext):
     await state.update_data({'menu': call.data})
-    menus_list = db.select_menu_buttons(menu=call.data)
+    menus_list = db.select_menu_buttons(menu=call.data, lan='uz')
     menus_list = [item[0] for item in menus_list]
     await call.message.edit_text('*Ushbu menyudagi tugmalar*', parse_mode="markdown",
                                  reply_markup=generate_inline_keyboard_menus(btn_list=menus_list))
@@ -286,15 +286,16 @@ async def menu_callback(call: types.CallbackQuery, state: FSMContext):
                                      reply_markup=yes_no)
         await state.set_state('delete-btn-menu')
 
-@dp.callback_query_handler(state='delete-btn-menu',text='yes')
+
+@dp.callback_query_handler(state='delete-btn-menu', text='yes')
 async def delete_menu(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    menus_list = db.select_menu_buttons(menu=data['menu'])
+    menus_list = db.select_menu_buttons(menu=data['menu'], lan='uz')
     menus_list = [item[0] for item in menus_list]
     db.delete_menu_buttons(menu=data['menu'])
-    await call.message.edit_text("*Tugma o'chirildi*", parse_mode="markdown",reply_markup=generate_inline_keyboard_menus(btn_list=menus_list))
+    await call.message.edit_text("*Tugma o'chirildi*", parse_mode="markdown",
+                                 reply_markup=generate_inline_keyboard_menus(btn_list=menus_list))
     await MenuCustom.menu.set()
-
 
 
 @dp.message_handler(AdminFilter(), state=MenuCustom.button_uz)
@@ -374,7 +375,7 @@ async def menu_callback(msg: types.Message, state: FSMContext):
                 data['content_kr']
             )
 
-            buttons_list = db.select_menu_buttons(menu=data['menu'])
+            buttons_list = db.select_menu_buttons(menu=data['menu'],lan='uz')
             buttons_list = [item[0] for item in buttons_list]
             await msg.answer("*Tugma muvaffaqiyatli qo'shildi*", parse_mode="markdown",
                              reply_markup=generate_inline_keyboard_menus(buttons_list))

@@ -1,4 +1,4 @@
-BOT_TOKEN = '5228072940:AAEI7BTLr8nQrnCw6KHD9zCaQe5D_kQyK0E'
+BOT_TOKEN = '7498692664:AAEf18AXOR6Mg_3ZsWTkb_fEHDuu3qiJ6RI'
 from utils.db_api.sqlite import db
 
 admins = db.select_all_adminss()
@@ -34,14 +34,7 @@ texts = {
                    '🏠 Манзиллар', '⚙️ Созламалар'],
     'mainM_uz' : ['💳 Kreditlar', '💰 Omonatlar', '💳 Bank Kartalar', '💸 To\'lovlar', '🛠️ Xizmatlar',
                 '👶 Bola Puli Va Nafaqa', '💼 Xazna', '⚙️ Sozlamalar', '📰 Yangiliklar', '🏠 Manzillar',
-                '📞 Xalq Banki Raqamlari','🔙 Ortga qaytish'],
-
-'mainM_ru' : ['💳 Кредиты', '💰 Вклады', '💳 Банковские карты', '💸 Платежи', '🛠️ Услуги', '👶 Детские пособия и выплаты',
-            '💼 Касса', '⚙️ Настройки', '📰 Новости', '🏠 Адреса', '📞 Номера Народного банка','🔙 Вернуться назад'],
-
-'mainM_kr' : ['💳 Кредитлар', '💰 Омонатлар', '💳 Банк карталар', '💸 Тўловлар', '🛠️ Хизматлар', '👶 Бола пули ва нафақа',
-            '💼 Хазна', '⚙️ Созламалар', '📰 Янгиликлар', '🏠 Манзиллар', '📞 Халқ банки рақамлари','🔙 Ортга қайтиш']
-
+                '📞 Xalq Banki Raqamlari'],
 }
 
 
