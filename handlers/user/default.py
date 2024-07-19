@@ -4,14 +4,17 @@ from keyboards.inline.Share import Share
 from loader import dp, bot
 from filters.private import IsPrivate
 from utils.db_api.sqlite import db
-
+from utils.misc.speak import speak
+from utils.misc.utils import get_currency_rates
 
 @dp.message_handler(text=['📰 Новости','📰 Янгиликлар','📰 Yangiliklar'])
 async def start(message: types.Message):
     lan = db.select_user(cid=message.from_user.id)[3]
-    btn_list = db.select_menu_content(button_text=message.text, lan=lan)
-    if btn_list:
-        await bot.copy_message(chat_id=message.chat.id, message_id=btn_list[0], from_chat_id='-1002243641076')
-    else:
-        await bot.send_message(chat_id=message.chat.id, text='*Hech nima topilmadi*')
+
+
+@dp.message_handler(text=['💱 Курсы валют и история','💱 Валюта курси ва тарихи','💱 Valyuta kursi va tarixi'])
+async def start(message: types.Message):
+    lan = db.select_user(cid=message.from_user.id)[3]
+    rates = get_currency_rates()
+    await message.answer(speak(rates,cid=message.from_user.id),parse_mode='markdown')
 
