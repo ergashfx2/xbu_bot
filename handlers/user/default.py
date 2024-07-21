@@ -15,20 +15,20 @@ from utils.misc.external import get_currency_rates
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ContentTypes, ReplyKeyboardRemove
 
 
-@dp.message_handler(text=['📰 Новости', '📰 Янгиликлар', '📰 Yangiliklar'])
+@dp.message_handler(state='*',text=['📰 Новости', '📰 Янгиликлар', '📰 Yangiliklar'])
 async def start(message: types.Message):
     text = db.select_every_day_text()
     await message.answer(speak(speak(text[1], cid=message.from_user.id), cid=message.from_user.id),
                          parse_mode='markdown')
 
 
-@dp.message_handler(text=['💱 Курсы валют и история', '💱 Валюта курси ва тарихи', '💱 Valyuta kursi va tarixi'])
+@dp.message_handler(state='*',text=['💱 Курсы валют и история', '💱 Валюта курси ва тарихи', '💱 Valyuta kursi va tarixi'])
 async def start(message: types.Message):
     text = db.select_every_day_text()
     await message.answer(speak(text[0], cid=message.from_user.id), parse_mode='markdown')
 
 
-@dp.message_handler(text=['🏠 Manzillar', '🏠 Адреса', '🏠 Манзиллар'])
+@dp.message_handler(state='*',text=['🏠 Manzillar', '🏠 Адреса', '🏠 Манзиллар'])
 async def manzillar(message: types, state: FSMContext):
     await message.answer(speak("Hozirda turgan joylashuvingizni yuboring", cid=message.from_user.id), parse_mode='markdown',
                          reply_markup=ReplyKeyboardMarkup(resize_keyboard=True,keyboard=[
@@ -54,7 +54,7 @@ async def location(message: types, state: FSMContext):
     await bot.send_location(chat_id=message.chat.id, latitude=location[5], longitude=location[6])
     await state.finish()
 
-@dp.message_handler(text=['⚙️ Sozlamalar','⚙️ Созламалар','⚙️ Настройки'])
+@dp.message_handler(state='*',text=['⚙️ Sozlamalar','⚙️ Созламалар','⚙️ Настройки'])
 async def sozlamalar(message:types.Message, state: FSMContext):
     await message.answer(speak("*Nimani o'zgartirmoqchisiz ?*", cid=message.from_user.id), parse_mode='markdown',reply_markup=ReplyKeyboardMarkup(resize_keyboard=True,keyboard=[
         [KeyboardButton(speak("🇺🇿 🇷🇺 Tilni o'zgartirish", cid=message.from_user.id))],
@@ -62,12 +62,12 @@ async def sozlamalar(message:types.Message, state: FSMContext):
         [KeyboardButton(speak("🔙 Ortga qaytish", cid=message.from_user.id))]
     ]))
 
-@dp.message_handler(text=["🇺🇿 🇷🇺 Tilni o'zgartirish",'🇺🇿 🇷🇺 Сменить язык',"🇺🇿 🇷🇺 Тилни о'згартириш"])
+@dp.message_handler(state='*',text=["🇺🇿 🇷🇺 Tilni o'zgartirish",'🇺🇿 🇷🇺 Сменить язык',"🇺🇿 🇷🇺 Тилни о'згартириш"])
 async def change_language(message:types.Message, state:FSMContext):
     await message.answer(speak('*Tilni tanlang*',cid=message.from_user.id,),reply_markup=lanM)
     await UserRegister.lan.set()
 
-@dp.message_handler(text=["☎️ Рақамни о'згартириш","☎️ Raqamni o'zgartirish",'☎️ Сменить номер'])
+@dp.message_handler(state='*',text=["☎️ Рақамни о'згартириш","☎️ Raqamni o'zgartirish",'☎️ Сменить номер'])
 async def change_phone(message:types.Message, state:FSMContext):
     await message.answer(speak('Telefon raqamingizni yuboring',cid=message.from_user.id),reply_markup=contact(cid=message.from_user.id))
     await UserRegister.phone.set()
