@@ -1,4 +1,4 @@
-BOT_TOKEN = '5228072940:AAEI7BTLr8nQrnCw6KHD9zCaQe5D_kQyK0E'
+BOT_TOKEN = '5228072940:AAFk5TyN-1-e7T0w60Pe_hmFk2Cn8Iqn0zI'
 from utils.db_api.sqlite import db
 
 admins = db.select_all_adminss()
@@ -33,7 +33,7 @@ texts = {
     'initial_kr': ['👤 Жисмоний шахслар учун', '🏢 Юридик шахслар учун', '💱 Валюта курси ва тарихи', '📰 Янгиликлар',
                    '🏠 Манзиллар', '⚙️ Созламалар'],
     'mainM_uz' : ['💳 Kreditlar', '💰 Omonatlar', '💳 Bank Kartalar', '💸 To\'lovlar', '🛠️ Xizmatlar',
-                '👶 Bola Puli Va Nafaqa', '💼 Xazna', '⚙️ Sozlamalar', '📰 Yangiliklar', '🏠 Manzillar',
+                '👶 Bola Puli Va Nafaqa', '💼 Xazna',
                 '📞 Xalq Banki Raqamlari'],
 }
 

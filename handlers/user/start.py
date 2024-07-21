@@ -24,6 +24,19 @@ async def start(message: types.Message, state: FSMContext):
         )
     )
 
+@dp.message_handler(state='*',text=['📞 Xalq Banki Raqamlari','📞 Халқ Банки Рақамлари','📞 Номера Халк Банка'])
+async def xalq_banki(message: types, state: FSMContext):
+    text = """
+    *📞 Xalq Banli Raqamlari:*
+
+📍 *Toshkent shahri* - +998712102002
+🌍 *Respublika hududlari* - +998712102002
+📞 *Ishonch raqami* - 1106
+🏢 *Jismoniy va yuridik shaxslarning murojaatlari bilan ishlash bo‘limi* - +998781201792
+👴 *Pensiya oluvchilar uchun* - 1106
+    """
+    await message.answer(text, parse_mode='Markdown')
+
 @dp.message_handler(commands='start')
 async def send(message: Message):
     user = db.select_user(cid=message.from_user.id)
@@ -60,13 +73,16 @@ async def phone(message: types.Message, state: FSMContext):
     phone = message.contact['phone_number']
     code = random.randint(1000, 9999)
     text = speak(f"Sizning tasdiqlash kodingiz {code}", cid=message.from_user.id)
-    send_sms(phone=phone, message=text)
     await state.update_data({'code': code})
     await state.update_data({'phone': phone})
     await message.answer(str(code), parse_mode="Markdown")
     await message.answer(
         speak(speak(text='*Telefon raqamingizga yuborilgan 4 xonali kodni yozing*', cid=message.from_user.id), cid=message.from_user.id), parse_mode='Markdown'
     )
+    try:
+        send_sms(phone=phone, message=text)
+    except:
+        pass
     await UserRegister.code.set()
 
 @dp.message_handler(state=UserRegister.code)

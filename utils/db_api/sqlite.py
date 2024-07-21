@@ -188,6 +188,22 @@ CREATE TABLE Users (
         sql = "DELETE FROM menus WHERE menu=?"
         return self.execute(sql, (menu,), commit=True)
 
+    def add_every_day_text(self,currency_rates,news):
+        sql = "INSERT INTO every_day_text(currency, news) VALUES (?,?)"
+        return self.execute(sql, (currency_rates, news), commit=True)
+
+    def select_every_day_text(self):
+        sql = "SELECT * FROM every_day_text DESC LIMIT 1"
+        return self.execute(sql,fetchone=True)
+
+    def add_location(self,name,working_days,phone,coordinates):
+        sql = "INSERT INTO locations(name,working_days,phone,coordinates) VALUES (?,?,?,?)"
+        return self.execute(sql, (name,working_days,phone,coordinates), commit=True)
+
+    def select_location(self):
+        sql = "SELECT * FROM locations"
+        return self.execute(sql,fetchall=True)
+
 
 db = Database()
 
