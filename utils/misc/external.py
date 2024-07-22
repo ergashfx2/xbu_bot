@@ -55,13 +55,7 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.options import Options
 
 def get_news():
-    geckodriver_path = "/snap/bin/geckodriver"
-    options = Options()
-    # options.headless = True  # Uncomment to run in headless mode
-
-    driver_service = FirefoxService(executable_path=geckodriver_path)
-    driver = webdriver.Firefox(service=driver_service, options=options)
-
+    driver = webdriver.Chrome("/usr/lib/chromium-browser/chromedriver")
     try:
         driver.get("https://xb.uz/post")
         
