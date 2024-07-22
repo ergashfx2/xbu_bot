@@ -58,7 +58,7 @@ from browsermobproxy import Server
 
 def get_news():
     # Start the BrowserMob Proxy server
-    server = Server("/browsermob-proxy")
+    server = Server("/browsermob-proxy/")
     server.start()
     proxy = server.create_proxy()
     
