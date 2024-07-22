@@ -53,6 +53,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--disable-dev-shm-usage')
@@ -60,6 +61,8 @@ chrome_options.add_argument('--headless')  # If running in a headless environmen
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
+
+def get_news():
     try:
         driver.get("https://xb.uz/post")
         
