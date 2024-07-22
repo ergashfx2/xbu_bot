@@ -51,31 +51,52 @@ def get_currency_rates():
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from webdriver_manager.firefox import GeckoDriverManager
 
 def get_news():
     # Initialize Firefox options
     options = FirefoxOptions()
     
-    # You can add options here; for example:
-    # options.set_preference("browser.privatebrowsing.autostart", True)
+    # Set up a proxy if necessary
+    proxy = Proxy()
+    proxy.proxy_type = ProxyType.MANUAL
+    proxy.http_proxy = "localhost:8080"  # Adjust the proxy settings as needed
+    proxy.ssl_proxy = "localhost:8080"
+    capabilities = webdriver.DesiredCapabilities.FIREFOX
+    proxy.add_to_capabilities(capabilities)
     
-    # Initialize the Firefox driver with options
+    # Initialize the Firefox driver with options and proxy
     driver = webdriver.Firefox(
         service=FirefoxService(GeckoDriverManager().install()),
-        options=options
+        options=options,
+        capabilities=capabilities
     )
-    driver.get("https://xb.uz/post")
+    
+    try:
+        # Open the target page
+        driver.get("https://xb.uz/post")
 
-    row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
-    news_url = row_data.get_attribute('href')
-    driver.get(news_url)
-    row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
-    news_title = row_data.text
+        # Find the element containing the news link and get the URL
+        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
+        news_url = row_data.get_attribute('href')
 
-    return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+        # Navigate to the news URL
+        driver.get(news_url)
+
+        # Find the element containing the news title
+        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
+        news_title = row_data.text
+
+        return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+
+    finally:
+        # Close the browser
+        driver.quit()
+
+# Example usage
+print(get_news())
 
 
