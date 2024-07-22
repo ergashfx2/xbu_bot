@@ -65,14 +65,14 @@ def get_news():
     proxy.proxy_type = ProxyType.MANUAL
     proxy.http_proxy = "localhost:8080"  # Adjust the proxy settings as needed
     proxy.ssl_proxy = "localhost:8080"
-    capabilities = webdriver.DesiredCapabilities.FIREFOX
-    proxy.to_capabilities(capabilities)
     
-    # Initialize the Firefox driver with options and proxy
+    # Adding proxy to Firefox options
+    options.proxy = proxy
+
+    # Initialize the Firefox driver with options
     driver = webdriver.Firefox(
         service=FirefoxService(GeckoDriverManager().install()),
-        options=options,
-        capabilities=capabilities
+        options=options
     )
     
     try:
