@@ -1,7 +1,7 @@
 import datetime
 import requests
 from bs4 import BeautifulSoup
-
+import chromedriver_autoinstaller
 
 def extract_currency_rates(data):
     rates = {}
