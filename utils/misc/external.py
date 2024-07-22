@@ -50,17 +50,15 @@ def get_currency_rates():
 
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-def get_news():
-    chrome_driver_path = "/usr/lib/chromium-browser/chromedriver"
-    chrome_service = ChromeService(executable_path=chrome_driver_path)
-    chrome_options = Options()
-    # chrome_options.add_argument("--headless")  # Uncomment if you want to run in headless mode
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--headless')  # If running in a headless environment
 
-    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     try:
         driver.get("https://xb.uz/post")
