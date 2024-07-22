@@ -56,7 +56,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 def get_news():
-    s = Service(r"C:\Program Files (x86)\chromedriver.exe")
+    s = Service(r"/usr/bin/chromedriver")
     driver = webdriver.Chrome(service=s)
 
     try:
