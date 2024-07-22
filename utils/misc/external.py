@@ -68,12 +68,7 @@ def get_news():
     
     # Adding proxy to Firefox options
     options.proxy = proxy
-
-    # Initialize the Firefox driver with options
-    driver = webdriver.Firefox(
-        service=FirefoxService(GeckoDriverManager().install()),
-        options=options
-    )
+    driver = webdriver.Firefox(options=options)
     
     try:
         # Open the target page
