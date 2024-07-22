@@ -51,20 +51,26 @@ def get_currency_rates():
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+
 def get_news():
-    driver = webdriver.Chrome("/usr/bin/chromedriver")
-    driver.get("https://xb.uz/post")
+    chrome_options = Options()
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
-    news_url = row_data.get_attribute('href')
-    driver.get(news_url)
-    row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
-    news_title = row_data.text
+    try:
+        driver.get("https://xb.uz/post")
 
-    return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
+        news_url = row_data.getAttribute('href')
+        driver.get(news_url)
 
+        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
+        news_title = row_data.text
+
+        return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+    finally:
+        driver.quit()
 
