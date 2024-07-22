@@ -56,7 +56,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 def get_news():
-    driver = webdriver.Chrome("/usr/bin/chromedriver", options=options)
+    driver = webdriver.Chrome("/usr/bin/chromedriver")
 
     try:
         driver.get("https://xb.uz/post")
