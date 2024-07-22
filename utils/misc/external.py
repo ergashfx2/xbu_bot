@@ -53,9 +53,21 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from webdriver_manager.firefox import GeckoDriverManager
+
 def get_news():
-    driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+    # Initialize Firefox options
+    options = FirefoxOptions()
+    
+    # You can add options here; for example:
+    # options.set_preference("browser.privatebrowsing.autostart", True)
+    
+    # Initialize the Firefox driver with options
+    driver = webdriver.Firefox(
+        service=FirefoxService(GeckoDriverManager().install()),
+        options=options
+    )
     driver.get("https://xb.uz/post")
 
     row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
