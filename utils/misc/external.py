@@ -56,8 +56,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 def get_news():
-    driver_path = '/usr/lib/chromium-browser/chromedriver'
-    driver = webdriver.Chrome(executable_path=driver_path)
+    chrome_driver_path = "/usr/lib/chromium-browser/chromedriver"
+    chrome_service = ChromeService(executable_path=chrome_driver_path)
+    driver = webdriver.Chrome(service=chrome_service)
     driver.get("https://xb.uz/post")
 
     row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
