@@ -63,8 +63,8 @@ def get_news():
     # Set up a proxy if necessary
     proxy = Proxy()
     proxy.proxy_type = ProxyType.MANUAL
-    proxy.http_proxy = "localhost:8080"  # Adjust the proxy settings as needed
-    proxy.ssl_proxy = "localhost:8080"
+    proxy.http_proxy = "localhost:5831"  # Adjust the proxy settings as needed
+    proxy.ssl_proxy = "localhost:5831"
     
     # Adding proxy to Firefox options
     options.proxy = proxy
