@@ -52,17 +52,24 @@ def get_currency_rates():
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options
 
 def get_news():
     geckodriver_path = "/snap/bin/geckodriver"
+    options = Options()
+    # options.headless = True  # Uncomment to run in headless mode
+
     driver_service = FirefoxService(executable_path=geckodriver_path)
-    driver = webdriver.Firefox(service=driver_service)
+    driver = webdriver.Firefox(service=driver_service, options=options)
 
     try:
         driver.get("https://xb.uz/post")
+        
+        # Check if the page loaded correctly
+        assert "xb.uz" in driver.current_url, "Failed to load xb.uz"
 
         row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
-        news_url = row_data.get_attribute('href')  # Changed from getAttribute to get_attribute
+        news_url = row_data.get_attribute('href')  # Ensure proper method
 
         driver.get(news_url)
 
