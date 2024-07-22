@@ -66,7 +66,7 @@ def get_news():
     proxy.http_proxy = "localhost:8080"  # Adjust the proxy settings as needed
     proxy.ssl_proxy = "localhost:8080"
     capabilities = webdriver.DesiredCapabilities.FIREFOX
-    proxy.add_to_capabilities(capabilities)
+    proxy.to_capabilities(capabilities)
     
     # Initialize the Firefox driver with options and proxy
     driver = webdriver.Firefox(
