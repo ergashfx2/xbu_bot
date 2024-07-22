@@ -51,26 +51,33 @@ def get_currency_rates():
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.service import Service as FirefoxService
 
 def get_news():
     geckodriver_path = "/snap/bin/geckodriver"
-    driver_service = webdriver.FirefoxService(executable_path=geckodriver_path)
-
+    driver_service = FirefoxService(executable_path=geckodriver_path)
     driver = webdriver.Firefox(service=driver_service)
+
     try:
         driver.get("https://xb.uz/post")
 
         row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
-        news_url = row_data.getAttribute('href')
+        news_url = row_data.get_attribute('href')  # Changed from getAttribute to get_attribute
+
         driver.get(news_url)
 
         row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
         news_title = row_data.text
 
         return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
     finally:
         driver.quit()
+
+# Example usage:
+news = get_news()
+if news:
+    print(news)
 
