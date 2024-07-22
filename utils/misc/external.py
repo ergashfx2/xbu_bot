@@ -49,40 +49,29 @@ def get_currency_rates():
     return rates
 
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-
-
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
-
 def get_news():
+    url = "https://xb.uz/post"
+    
     try:
-        driver.get("https://xb.uz/post")
-        
-        # Check if the page loaded correctly
-        assert "xb.uz" in driver.current_url, "Failed to load xb.uz"
+        # Fetch the main page
+        response = requests.get(url)
+        response.raise_for_status() 
 
-        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
-        news_url = row_data.get_attribute('href')  # Ensure proper method
+        soup = BeautifulSoup(response.text, 'html.parser')
+        news_link = soup.select_one('div[1] main div div div[1] a')['href']
+        news_url = f"https://xb.uz{news_link}"
+        response = requests.get(news_url)
+        response.raise_for_status()
 
-        driver.get(news_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
-        news_title = row_data.text
+        # Extract the news title
+        news_title = soup.select_one('div[1] main div div div h2').text
 
-        return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+        return f"*{news_title}*\n\n*Batafsil* : {news_url}"
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
-    finally:
-        driver.quit()
 
 # Example usage:
 news = get_news()
