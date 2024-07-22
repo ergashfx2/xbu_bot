@@ -7,7 +7,10 @@ import middlewares, filters, handlers
 
 from utils.db_api.sqlite import db
 from utils.misc.external import get_currency_rates, get_news
+import chromedriver_autoinstaller
 
+
+chromedriver_autoinstaller.install()
 logging.basicConfig(level=logging.INFO)
 
 async def job():
