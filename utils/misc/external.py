@@ -56,7 +56,10 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 def get_news():
-    driver = webdriver.Firefox()
+    geckodriver_path = "/snap/bin/geckodriver"
+    driver_service = webdriver.FirefoxService(executable_path=geckodriver_path)
+
+    driver = webdriver.Firefox(service=driver_service)
     try:
         driver.get("https://xb.uz/post")
 
