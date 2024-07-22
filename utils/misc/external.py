@@ -56,7 +56,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 def get_news():
-    chromeOptions = webdriver.ChromeOptions() 
+    chromeOptions = webdriver.Options() 
     chromeOptions.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2}) 
     chromeOptions.add_argument("--no-sandbox") 
     chromeOptions.add_argument("--disable-setuid-sandbox") 
@@ -68,7 +68,7 @@ def get_news():
     chromeOptions.add_argument("disable-infobars")
     chromeOptions.add_argument(r"user-data-dir=.\cookies\\test")
     s = Service(r"/usr/bin/chromedriver")
-    driver = webdriver.Chrome(service=s,chrome_options=chromeOptions)
+    driver = webdriver.Chrome(service=s,options=chromeOptions)
 
     try:
         driver.get("https://xb.uz/post")
