@@ -50,12 +50,18 @@ def get_currency_rates():
 
 
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 
 def get_news():
-    driver = webdriver.Chrome("/usr/lib/chromium-browser/chromedriver")
+    chrome_driver_path = "/usr/lib/chromium-browser/chromedriver"
+    chrome_service = ChromeService(executable_path=chrome_driver_path)
+    chrome_options = Options()
+    # chrome_options.add_argument("--headless")  # Uncomment if you want to run in headless mode
+
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+
     try:
         driver.get("https://xb.uz/post")
         
@@ -81,4 +87,5 @@ def get_news():
 news = get_news()
 if news:
     print(news)
+
 
