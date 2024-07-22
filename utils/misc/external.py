@@ -51,47 +51,44 @@ def get_currency_rates():
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.common.proxy import Proxy, ProxyType
-from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+from browsermobproxy import Server
 
 def get_news():
-    # Initialize Firefox options
-    options = FirefoxOptions()
+    # Start the BrowserMob Proxy server
+    server = Server("/browsermob-proxy")
+    server.start()
+    proxy = server.create_proxy()
     
-    # Set up a proxy if necessary
-    proxy = Proxy()
-    proxy.proxy_type = ProxyType.MANUAL
-    proxy.http_proxy = "localhost:5831"  # Adjust the proxy settings as needed
-    proxy.ssl_proxy = "localhost:5831"
+    # Set up Chrome options to use the proxy
+    chrome_options = Options()
+    chrome_options.add_argument(f"--proxy-server={proxy.proxy}")
+
+    # Initialize the WebDriver with the Chrome options
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
     
-    # Adding proxy to Firefox options
-    options.proxy = proxy
-    driver = webdriver.Firefox(options=options)
+    # Set up the request header modification
+    proxy.headers({'Host': '*'})
     
-    try:
-        # Open the target page
-        driver.get("https://xb.uz/post")
+    driver.get("https://xb.uz/post")
 
-        # Find the element containing the news link and get the URL
-        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
-        news_url = row_data.get_attribute('href')
+    row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
+    news_url = row_data.get_attribute('href')
+    driver.get(news_url)
+    row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
+    news_title = row_data.text
 
-        # Navigate to the news URL
-        driver.get(news_url)
+    # Stop the proxy server
+    server.stop()
 
-        # Find the element containing the news title
-        row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
-        news_title = row_data.text
+    driver.quit()
 
-        return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+    return f"*{news_title}*\n\n*Batafsil* :{news_url}"
 
-    finally:
-        # Close the browser
-        driver.quit()
-
-# Example usage
+# Usage
 print(get_news())
+
 
 
