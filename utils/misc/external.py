@@ -1,6 +1,7 @@
 import datetime
 import requests
 from bs4 import BeautifulSoup
+from lxml import etree
 
 
 def extract_currency_rates(data):
@@ -51,14 +52,10 @@ def get_currency_rates():
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
 def get_news():
-    options = Options()
-    options.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver = webdriver.Chrome()
+
     driver.get("https://xb.uz/post")
 
     row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
@@ -68,5 +65,6 @@ def get_news():
     news_title = row_data.text
 
     return f"*{news_title}*\n\n*Batafsil* :{news_url}"
+
 
 
