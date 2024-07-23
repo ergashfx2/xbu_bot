@@ -74,7 +74,6 @@ def get_news():
     driver.get("https://xb.uz/post")
 
     try:
-        # Wait for the element to be present
         wait = WebDriverWait(driver, 10)
         row_data = wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')))
