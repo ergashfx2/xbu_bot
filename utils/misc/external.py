@@ -54,13 +54,9 @@ def get_currency_rates():
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
+import chromedriver_binary 
 def get_news():
-    chrome_options = Options()
-    chrome_options.binary_location = "/usr/bin/google-chrome"
-    service = Service("/usr/bin/chromedriver")
-
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome()
     driver.get("https://xb.uz/post")
 
     row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
