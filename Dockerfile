@@ -27,10 +27,8 @@ RUN pip3 install --upgrade pip && \
     pip3 install -r /tmp/requirements.txt
 
 
-COPY . /root/xbu_bot/
-
-# Set the working directory
-WORKDIR /root/xbu_bot/
+WORKDIR /app
+COPY . /app
 
 # Run the Python script
 CMD ["python3", "app.py"]
