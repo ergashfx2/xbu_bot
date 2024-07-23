@@ -24,7 +24,7 @@ async def start(message: types.Message, state: FSMContext):
         )
     )
 
-@dp.message_handler(state='*',text=['📞 Xalq Banki Raqamlari','📞 Халқ Банки Рақамлари','📞 Номера Халк Банка'])
+@dp.message_handler(state='*',text=['📞 Xalq Banki Raqamlari','📞 Халқ Банки Рақамлари','📞 Номера Халк Банка','🏢 Yuridik shaxslar uchun','🏢 Для юридических лиц','🏢 Юридик шахслар учун'])
 async def xalq_banki(message: types, state: FSMContext):
     text = """
     *📞 Xalq Banli Raqamlari:*
