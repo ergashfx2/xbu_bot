@@ -58,7 +58,7 @@ from selenium.webdriver.common.by import By
 def get_news():
     chrome_options = Options()
     chrome_options.binary_location = "/usr/bin/google-chrome"
-    service = Service("/usr/local/bin/chromedriver")  
+    service = Service("/usr/bin/chromedriver")
 
     driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get("https://xb.uz/post")
