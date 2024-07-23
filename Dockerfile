@@ -40,4 +40,4 @@ COPY . /app
 WORKDIR /app
 
 # Run the Python script
-CMD ["python", "your_script.py"]
+CMD ["python", "app.py"]
