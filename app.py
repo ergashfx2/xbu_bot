@@ -8,6 +8,8 @@ import middlewares, filters, handlers
 from utils.db_api.sqlite import db
 from utils.misc.external import get_currency_rates, get_news
 
+
+
 logging.basicConfig(level=logging.INFO)
 
 async def job():
