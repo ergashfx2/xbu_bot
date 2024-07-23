@@ -161,7 +161,7 @@ CREATE TABLE Users (
     def delete_channel(self, channel):
         return self.execute(f'DELETE FROM Channels WHERE channel_id=?', parameters=(channel,), commit=True)
 
-    def select_menu_buttons(self, menu,lan):
+    def select_menu_buttons(self, menu, lan):
         sql = f"SELECT menu_button_{lan} FROM menus WHERE menu=?"
         return self.execute(sql, (menu,), fetchall=True)
 
@@ -188,21 +188,21 @@ CREATE TABLE Users (
         sql = "DELETE FROM menus WHERE menu=?"
         return self.execute(sql, (menu,), commit=True)
 
-    def add_every_day_text(self,currency_rates,news):
+    def add_every_day_text(self, currency_rates, news):
         sql = "INSERT INTO every_day_text(currency, news) VALUES (?,?)"
         return self.execute(sql, (currency_rates, news), commit=True)
 
     def select_every_day_text(self):
-        sql = "SELECT * FROM every_day_text DESC LIMIT 1"
-        return self.execute(sql,fetchone=True)
+        sql = "SELECT * FROM every_day_text ORDER BY id DESC LIMIT 1;"
+        return self.execute(sql, fetchone=True)
 
-    def add_location(self,name,working_days,phone,coordinates):
+    def add_location(self, name, working_days, phone, coordinates):
         sql = "INSERT INTO locations(name,working_days,phone,coordinates) VALUES (?,?,?,?)"
-        return self.execute(sql, (name,working_days,phone,coordinates), commit=True)
+        return self.execute(sql, (name, working_days, phone, coordinates), commit=True)
 
     def select_location(self):
         sql = "SELECT * FROM locations"
-        return self.execute(sql,fetchall=True)
+        return self.execute(sql, fetchall=True)
 
 
 db = Database()
