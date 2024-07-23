@@ -52,10 +52,9 @@ def get_currency_rates():
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 
 def get_news():
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome()
 
     driver.get("https://xb.uz/post")
 
@@ -65,10 +64,7 @@ def get_news():
     row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div/h2')
     news_title = row_data.text
 
-    driver.quit()  # Make sure to close the browser
-
     return f"*{news_title}*\n\n*Batafsil* :{news_url}"
-
 
 
 
