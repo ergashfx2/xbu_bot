@@ -2,6 +2,8 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 
 def extract_currency_rates(data):
@@ -54,8 +56,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 def get_news():
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+    chrome_options.binary_location = "/usr/bin/google-chrome"
+    service = Service("/usr/local/bin/chromedriver")  
 
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get("https://xb.uz/post")
 
     row_data = driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div/div/div[1]/a')
