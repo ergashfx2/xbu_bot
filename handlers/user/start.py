@@ -14,9 +14,10 @@ from utils.misc.twilio import send_sms
 from states.states import MenuCustom
 
 
-@dp.message_handler(state='*', text=['/start', '🔙 Ortga qaytish','🔙 Вернуться назад','🔙 Ортга қайтиш'])
+@dp.message_handler(state='*', text=['🔙 Ortga qaytish','🔙 Вернуться назад','🔙 Ортга қайтиш'])
 async def start(message: types.Message, state: FSMContext):
     await state.finish()
+    
     await message.answer(
         speak('*Xush kelibsiz! Kerakli menyuni tanlang*', cid=message.from_user.id),
         reply_markup=generate_btn(
@@ -37,7 +38,7 @@ async def xalq_banki(message: types, state: FSMContext):
     """
     await message.answer(text, parse_mode='Markdown')
 
-@dp.message_handler(commands='start')
+@dp.message_handler(state='*',commands='start')
 async def send(message: Message):
     user = db.select_user(cid=message.from_user.id)
     if user[3] and user[4] is not None:
