@@ -323,7 +323,7 @@ async def menu_callback(call: types.Message, state: FSMContext):
 
 @dp.message_handler(AdminFilter(), state=MenuCustom.content_uz, content_types=ContentTypes.ANY)
 async def menu_callback(msg: types.Message, state: FSMContext):
-    res = await bot.copy_message(chat_id='-1002243641076', from_chat_id=msg.chat.id, message_id=msg.message_id)
+    res = await bot.copy_message(chat_id='-1002205517577', from_chat_id=msg.chat.id, message_id=msg.message_id)
     await state.update_data({'content_uz': res.message_id})
     await msg.answer('*Ushbu tugmaning rus tiliga beradigan javobini kiriting*', parse_mode="markdown",
                      reply_markup=back_manage_menus)
@@ -332,7 +332,7 @@ async def menu_callback(msg: types.Message, state: FSMContext):
 
 @dp.message_handler(AdminFilter(), state=MenuCustom.content_ru, content_types=ContentTypes.ANY)
 async def menu_callback(msg: types.Message, state: FSMContext):
-    res = await bot.copy_message(chat_id='-1002243641076', from_chat_id=msg.chat.id, message_id=msg.message_id)
+    res = await bot.copy_message(chat_id='-1002205517577', from_chat_id=msg.chat.id, message_id=msg.message_id)
     await state.update_data({'content_ru': res.message_id})
     await msg.answer('*Ushbu tugmaning kril alifbosiga beradigan javobini kiriting*', parse_mode="markdown",
                      reply_markup=back_manage_menus)
@@ -342,7 +342,7 @@ async def menu_callback(msg: types.Message, state: FSMContext):
 @dp.message_handler(AdminFilter(), state=MenuCustom.content_kr, content_types=ContentTypes.ANY)
 async def menu_callback(msg: types.Message, state: FSMContext):
     try:
-        res = await bot.copy_message(chat_id='-1002243641076', from_chat_id=msg.chat.id, message_id=msg.message_id)
+        res = await bot.copy_message(chat_id='-1002205517577', from_chat_id=msg.chat.id, message_id=msg.message_id)
         await state.update_data({'content_kr': res.message_id})
         data = await state.get_data()
         required_keys = ['menu', 'button_uz', 'button_ru', 'button_kr', 'content_uz', 'content_ru', 'content_kr']

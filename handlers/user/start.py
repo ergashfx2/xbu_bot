@@ -12,7 +12,7 @@ from states.states import UserRegister
 from utils.misc.speak import speak, translate_menu
 from utils.misc.twilio import send_sms
 from states.states import MenuCustom
-
+from keyboards.inline.chat import chat_btn
 
 @dp.message_handler(state='*', text=['🔙 Ortga qaytish','🔙 Вернуться назад','🔙 Ортга қайтиш'])
 async def start(message: types.Message, state: FSMContext):
@@ -25,18 +25,24 @@ async def start(message: types.Message, state: FSMContext):
         )
     )
 
-@dp.message_handler(state='*',text=['📞 Xalq Banki Raqamlari','📞 Халқ Банки Рақамлари','📞 Номера Халк Банка','🏢 Yuridik shaxslar uchun','🏢 Для юридических лиц','🏢 Юридик шахслар учун'])
+@dp.message_handler(state='*',text=['📞 Ishonch raqami','📞 Ишонч рақами','📞 Доверительный номер','🏢 Yuridik shaxslar uchun','🏢 Для юридических лиц','🏢 Юридик шахслар учун'])
 async def xalq_banki(message: types, state: FSMContext):
     text = """
-    *📞 Xalq Banli Raqamlari:*
+    *☎️  Xalq Banki ishonch raqami: +998712102002*
 
-📍 *Toshkent shahri* - +998712102002
-🌍 *Respublika hududlari* - +998712102002
-📞 *Ishonch raqami* - 1106
-🏢 *Jismoniy va yuridik shaxslarning murojaatlari bilan ishlash bo‘limi* - +998781201792
-👴 *Pensiya oluvchilar uchun* - 1106
+📞  *Qisqa raqam* - 1106
     """
     await message.answer(text, parse_mode='Markdown')
+
+
+@dp.message_handler(state='*',text=['💬 Chat','💬 Чат','💬 Чат'])
+async def xalq_banki(message: types, state: FSMContext):
+    text = """
+    *Ushbu telegram orqali Xalq bankiga doir istalgan savolingizni yozib yuborishngiz mumkin. Operatorga savolingizni yozish uchun pastdagi tugmani bosing! 👇🏻*
+    """
+    await message.answer(speak(text,cid=message.from_user.id), parse_mode='Markdown',reply_markup=chat_btn)
+
+
 
 @dp.message_handler(state='*',commands='start')
 async def send(message: Message):
@@ -128,6 +134,6 @@ async def jismoniy_buttons(message: types.Message, state: FSMContext):
     lan = db.select_user(cid=message.from_user.id)[3]
     btn_list = db.select_menu_content(button_text=message.text, lan=lan)
     if btn_list[0]:
-        await bot.copy_message(chat_id=message.chat.id, message_id=btn_list[0], from_chat_id='-1002243641076')
+        await bot.copy_message(chat_id=message.chat.id, message_id=btn_list[0], from_chat_id='-1002205517577')
     else:
         await bot.send_message(chat_id=message.chat.id, text='*Hech nima topilmadi*')

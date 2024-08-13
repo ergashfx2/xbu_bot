@@ -33,8 +33,8 @@ texts = {
     'initial_kr': ['👤 Жисмоний шахслар учун', '🏢 Юридик шахслар учун', '💱 Валюта курси ва тарихи', '📰 Янгиликлар',
                    '🏠 Манзиллар', '⚙️ Созламалар'],
     'mainM_uz' : ['💳 Kreditlar', '💰 Omonatlar', '💳 Bank Kartalar', '💸 To\'lovlar', '🛠️ Xizmatlar',
-                '👶 Bola Puli Va Nafaqa', '💼 Xazna',
-                '📞 Xalq Banki Raqamlari'],
+                '👶 Bola Puli Va Nafaqa', '💼 Xazna','💬 Chat',
+                '📞 Ishonch raqami'],
 }
 
 
