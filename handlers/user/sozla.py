@@ -168,7 +168,7 @@ async def manage_news(call: CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state='post_news',content_types=types.ContentTypes.ANY)
 async def post_news(msg:types.Message,state: FSMContext):
-    res = await bot.copy_message(chat_id='-1002205517577', from_chat_id=msg.chat.id, message_id=msg.message_id)
+    res = await bot.forward_message(chat_id='-1002205517577', from_chat_id=msg.chat.id, message_id=msg.message_id)
     db.add_every_day_text(news=res.message_id)
     await msg.answer("Saqlandi")
     await state.finish()

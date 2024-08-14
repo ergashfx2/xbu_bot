@@ -46,7 +46,7 @@ async def xalq_banki(message: types, state: FSMContext):
 @dp.message_handler(state='*',text=['📰 Yangiliklar','📰 Новости'])
 async def xalq_banki(message: types, state: FSMContext):
     news = db.select_every_day_news()
-    await bot.copy_message(chat_id=message.chat.id, message_id=news[0], from_chat_id='-1002205517577')
+    await bot.forward_message(chat_id=message.chat.id, message_id=news[0], from_chat_id='-1002205517577')
 
 
 
