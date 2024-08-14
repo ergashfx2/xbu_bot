@@ -22,7 +22,7 @@ async def start(message: types.Message):
                          parse_mode='markdown')
 
 
-@dp.message_handler(state='*',text=['💱 Курсы валют и история', '💱 Валюта курси ва тарихи', '💱 Valyuta kursi va tarixi'])
+@dp.message_handler(state='*',text=['💱 Курс валют', '💱 Валюта курси ва тарихи', '💱 Valyuta kursi'])
 async def start(message: types.Message):
     text = db.select_every_day_currency()
     print(text)
