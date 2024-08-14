@@ -16,3 +16,5 @@ class MenuCustom(StatesGroup):
     content_uz = State()
     content_ru = State()
     content_kr = State()
+
+

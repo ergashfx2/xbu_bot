@@ -157,7 +157,21 @@ async def add_channel(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
 
+@dp.callback_query_handler(AdminFilter(),text='manage_news')
+async def manage_news(call: CallbackQuery, state: FSMContext):
+    await call.message.edit_text(text='Postni yuboring')
+    await state.set_state('post_news')
+
+
 # States
+
+
+@dp.message_handler(state='post_news',content_types=types.ContentTypes.ANY)
+async def post_news(msg:types.Message,state: FSMContext):
+    res = await bot.copy_message(chat_id='-1002205517577', from_chat_id=msg.chat.id, message_id=msg.message_id)
+    db.add_every_day_text(news=res.message_id)
+    await msg.answer("Saqlandi")
+    await state.finish()
 
 @dp.message_handler(AdminFilter(), content_types=types.ContentType.ANY, state="add_channel")
 async def add_base(msg: types.Message, state: FSMContext):
@@ -386,3 +400,4 @@ async def menu_callback(msg: types.Message, state: FSMContext):
         print(f"Error: {e}")
         await msg.answer("❌ Xato yuz berdi. Iltimos, qayta urinib ko'ring.", parse_mode="markdown",
                          reply_markup=back_manage_menus)
+

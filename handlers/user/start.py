@@ -43,6 +43,14 @@ async def xalq_banki(message: types, state: FSMContext):
     await message.answer(speak(text,cid=message.from_user.id), parse_mode='Markdown',reply_markup=chat_btn)
 
 
+@dp.message_handler(state='*',text=['📰 Yangiliklar','📰 Новости'])
+async def xalq_banki(message: types, state: FSMContext):
+    news = db.select_every_day_news()
+    await bot.copy_message(chat_id=message.chat.id, message_id=news[0], from_chat_id='-1002205517577')
+
+
+
+
 
 @dp.message_handler(state='*',commands='start')
 async def send(message: Message):
@@ -67,9 +75,6 @@ async def lan(message: Message, state: FSMContext):
     if msg == "🇺🇿 O'zbek":
         db.update_user(lan='uz', id=message.from_user.id)
         await message.answer(texts["ask_phone_uz"], parse_mode="Markdown", reply_markup=contact(cid=message.from_user.id))
-    elif msg == '🇺🇿 ўзбек':
-        db.update_user(lan='kr', id=message.from_user.id)
-        await message.answer(texts["ask_phone_kr"], parse_mode="Markdown", reply_markup=contact(cid=message.from_user.id))
     elif msg == '🇷🇺 Русский':
         db.update_user(id=message.from_user.id, lan='ru')
         await message.answer(texts["ask_phone_ru"], parse_mode="Markdown", reply_markup=contact(cid=message.from_user.id))
@@ -78,34 +83,19 @@ async def lan(message: Message, state: FSMContext):
 @dp.message_handler(state=UserRegister.phone, content_types=['contact'])
 async def phone(message: types.Message, state: FSMContext):
     phone = message.contact['phone_number']
-    code = random.randint(1000, 9999)
-    text = speak(f"Sizning tasdiqlash kodingiz {code}", cid=message.from_user.id)
-    await state.update_data({'code': code})
     await state.update_data({'phone': phone})
-    await message.answer(str(code), parse_mode="Markdown")
-    await message.answer(
-        speak(speak(text='*Telefon raqamingizga yuborilgan 4 xonali kodni yozing*', cid=message.from_user.id), cid=message.from_user.id), parse_mode='Markdown'
-    )
-    try:
-        send_sms(phone=phone, message=text)
-    except:
-        pass
-    await UserRegister.code.set()
-
-@dp.message_handler(state=UserRegister.code)
-async def code(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    code = data.get('code')
     phone = data.get('phone')
-    if str(code) == message.text:
-        db.update_user(id=message.from_user.id, phone=phone)
-        lan = db.select_user(cid=message.from_user.id)[3]
-        menu_list = translate_menu(lan, texts['initial_uz'])
-        await message.answer(
+    db.update_user(id=message.from_user.id, phone=phone)
+    lan = db.select_user(cid=message.from_user.id)[3]
+    menu_list = translate_menu(lan, texts['initial_uz'])
+    await message.answer(
             speak('*Xush kelibsiz! Kerakli menyuni tanlang*', cid=message.from_user.id), parse_mode='Markdown',
             reply_markup=generate_btn(btn_list=menu_list, cid=message.from_user.id)
         )
-        await state.finish()
+    await state.finish()
+
+
 
 @dp.message_handler(text=['👤 Для физических лиц', '👤 Jismoniy shaxslar uchun', '👤 Жисмоний шахслар учун'])
 async def menu(message: types.Message, state: FSMContext):

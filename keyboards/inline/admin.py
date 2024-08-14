@@ -16,6 +16,9 @@ admin_main = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(text="✏️ Menyularni boshqarish", callback_data="manage_menus")
     ],
+        [
+        InlineKeyboardButton(text="✏️ Yangiliklarni boshqarish", callback_data="manage_news")
+    ],
     [
         InlineKeyboardButton(text=" ⚙️ Boshqa sozlamalar", callback_data="settings")
 

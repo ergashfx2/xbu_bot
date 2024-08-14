@@ -188,13 +188,18 @@ CREATE TABLE Users (
         sql = "DELETE FROM menus WHERE menu=?"
         return self.execute(sql, (menu,), commit=True)
 
-    def add_every_day_text(self, currency_rates, news):
+    def add_every_day_text(self, currency_rates='None', news='None'):
         sql = "INSERT INTO every_day_text(currency, news) VALUES (?,?)"
         return self.execute(sql, (currency_rates, news), commit=True)
 
-    def select_every_day_text(self):
-        sql = "SELECT * FROM every_day_text ORDER BY id DESC LIMIT 1;"
+    def select_every_day_currency(self):
+        sql = "SELECT currency FROM every_day_text WHERE currency != 'None' ORDER BY id DESC LIMIT 1;"
         return self.execute(sql, fetchone=True)
+    
+    def select_every_day_news(self):
+        sql = "SELECT news FROM every_day_text WHERE news != 'None' ORDER BY id DESC LIMIT 1;"
+        return self.execute(sql, fetchone=True)
+    
 
     def add_location(self, name, working_days, phone, coordinates):
         sql = "INSERT INTO locations(name,working_days,phone,coordinates) VALUES (?,?,?,?)"
@@ -203,6 +208,35 @@ CREATE TABLE Users (
     def select_location(self):
         sql = "SELECT * FROM locations"
         return self.execute(sql, fetchall=True)
+
+    def select_location_nomi(self, **kwargs):
+        sql = "SELECT nomi FROM locations WHERE "
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchall=True)
+
+    def select_location_tuman(self, **kwargs):
+        sql = "SELECT DISTINCT tuman FROM locations WHERE "
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchall=True)
+
+    def select_locations_viloyat(self):
+        sql = "SELECT DISTINCT  viloyat FROM locations"
+        return self.execute(sql, fetchall=True)
+
+    def select_location_bxm(self, **kwargs):
+        sql = "SELECT DISTINCT bxm FROM locations WHERE "
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchall=True)
+    
+    def select_location_coordinates(self, **kwargs):
+        sql = "SELECT coordinates FROM locations WHERE "
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchall=True)
+
+    def select_location_single(self, **kwargs):
+        sql = "SELECT * FROM locations WHERE "
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchone=True)
 
 
 db = Database()

@@ -14,13 +14,8 @@ logging.basicConfig(level=logging.INFO)
 
 async def job():
     try:
-        logging.info("Fetching currency rates...")
         currency_rates = get_currency_rates()
-        logging.info("Fetching news...")
-        news = get_news()
-        logging.info("Updating database...")
-        db.add_every_day_text(currency_rates, news)
-        logging.info("Database updated.")
+        db.add_every_day_text(currency_rates)
     except Exception as e:
         logging.error(f"Error in job: {e}")
 

@@ -49,6 +49,7 @@ def get_currency_rates():
             continue
         emoji = stickers.get(currency, '')
         rates += f"{emoji} *{currency} kurslari*\n\n• *Sotib olish:* {data[currency]['Sotib olish']} So'm\n• *Sotish:* {data[currency]['Sotish']} So'm\n\n"
+    print(rates)
 
     return rates
 
